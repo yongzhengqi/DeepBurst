@@ -18,14 +18,19 @@ int main()
 	BurstDetector A(screen_layer_size, screen_layer_threshold, log_size, threshold);
 	CorrectBurstDetector B(threshold);
 	CMBurstDetector C(cm_size, threshold);
-	uint64_t tmp;
 	int window = 0, cnt = 0;
+	
+	int input_size = 30000000;  // 20000000 is the default value.
+	int window_size = 10000;  // 40000 is the original value.
 
     ofstream inputData, labelData;
     inputData.open("input_flow.csv");
     labelData.open("bursts.csv");
+	
+	inputData << "id,window\n";
+	labelData << "start_window,end_window,flow_id\n";
 
-	for(int i = 0; i < 20000000; i++)
+	for(int i = 0; i < input_size; i++)
 	{
 		
 		uint64_t tim, id;
@@ -33,7 +38,7 @@ int main()
 		fin.read((char *)&id, sizeof(char) * 8);
 		
 		cnt++;
-        if(cnt > 40000)
+        if(cnt > window_size)
         {
         	cnt = 0;
         	window++;
@@ -46,7 +51,9 @@ int main()
 	}
 
     printf("Totally %d distinct flows\n", B.w);
-    printf("Actually there exist %d bursts!\n", B.Record.size());
+	printf("Actually there exist %lu bursts!\n", B.Record.size());
+	printf("BurstSketch totally reports %lu bursts!\n", A.log.Record.size());
+	printf("CM Burst detector totally reports %lu bursts!\n", C.Record.size());
 
     for (int i = 0, sz = B.Record.size(); i < sz; i++) {
         labelData << B.Record[i].start_window << ',' << B.Record[i].end_window << ',' << B.Record[i].flow_id << '\n';
