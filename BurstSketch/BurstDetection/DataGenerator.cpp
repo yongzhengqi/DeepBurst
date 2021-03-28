@@ -26,7 +26,7 @@ public:
             last_timestamp = timestamp;
         }
         if (log.lookup(id, timestamp))
-            return false;
+            return true;
         int ret = screen_layer.insert(id);
         if (ret == -1)
             return false;
@@ -52,8 +52,8 @@ int main() {
     CMBurstDetector C(cm_size, threshold);
     int window = 0, cnt = 0;
 
-    int input_size = 30000000;  // 20000000 is the default value.
-    int window_size = 500000;  // 40000 is the original value.
+    int input_size = 20000000;  // 20000000 is the default value.
+    int window_size = 40000;  // 40000 is the original value.
 
     ofstream inputData, labelData;
     inputData.open("input_flow.csv");
@@ -86,7 +86,8 @@ int main() {
     printf("CM Burst detector totally reports %lu bursts!\n", C.Record.size());
 
     for (int i = 0, sz = B.Record.size(); i < sz; i++) {
-        labelData << B.Record[i].start_window << ',' << B.Record[i].end_window << ',' << B.Record[i].flow_id << '\n';
+        labelData << B.Record[i].start_window << ',' << B.Record[i].end_window << ','
+                  << B.Record[i].flow_id << '\n';
     }
 
     inputData.close();
