@@ -6,7 +6,7 @@
 using namespace std;
 
 map<uint64_t, int> D;
-vector <pair<int, int>> S[2000000];
+vector <pair<int, int> > S[2000000];
 int w = 0;
 
 class BurstDetectorModified : public BurstDetector {
